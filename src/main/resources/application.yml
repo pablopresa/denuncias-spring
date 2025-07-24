@@ -1,0 +1,54 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /facturaspersona/api
+application:
+  name: facturaspersona
+  version: 1.0.0
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+webservices:
+  reg-contribuyente:
+    url: http://proxyservt.bps.net/Registros/Empresas/V003/WsRegContribuyenteService
+    wsdl: http://proxyservt.bps.net/Registros/Empresas/V003/WsRegContribuyenteService?wsdl
+    timeout: 360000
+  reg-empresa:
+    url: http://proxyservt.bps.net/Registros/Empresas/V003/WsRegEmpresasService
+    wsdl: http://proxyservt.bps.net/Registros/Empresas/V003/WsRegEmpresasService?wsdl
+    timeout: 360000
+  factura-generacion:
+    url: http://srvh2122:8080/Facturacion/WsEmisorDocumentoService/V001/WsEmisorDocumentoService
+    wsdl: http://srvh2122:8080/Facturacion/WsEmisorDocumentoService/V001/WsEmisorDocumentoService?wsdl
+    timeout: 360000
+  factura-consulta:
+    url: http://srvh2122:8080/Recaudacion/Emisor/V001/WsEmisorConsulta
+    wsdl: http://srvh2122:8080/Recaudacion/Emisor/V001/WsEmisorConsulta?wsdl
+    timeout: 360000
+facturas-persona:
+  servicio:
+    nombre: ${SERVICIO_NOMBRE}
+    version: ${SERVICIO_VERSION}
+    fechaExpiracion: ${SERVICIO_FECHA_EXPIRACION}
+    versionEstandar: ${SERVICIO_VERSION_ESTANDAR}
+    codNatJuridicaUnipersonal: ${COD_NAT_JURIDICA_UNIPERSONAL}
+    codRelLaboralPatronoUnipersonal: ${COD_REL_LABORAL_PATRONO_UNIPERSONAL}
+    codAportacionesValidas: ${COD_APORTACIONES_VALIDAS}
+    filtrarAnuladas: ${FLAG_FILTRAR_ANULADAS}
+    nivelDetalleDuplicadoDocumento: ${NIVEL_DETALLE_DUPLICADO_DOCUMENTO}
+    diaHabilCalchab: ${DIA_HABIL_CALCHAB}
+    devolverBase64: ${DEVOLVER_BASE_64}
+  mensajes:
+    mensajeErrorDocumentosPorEmpresa101: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_101}
+    mensajeErrorDocumentosPorEmpresa1021: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_102_1}
+    mensajeErrorDocumentosPorEmpresa1022: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_102_2}
+    mensajeErrorDocumentosPorEmpresa106: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_106}
+    mensajeErrorDocumentosPorEmpresa107: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_107}
+    mensajeErrorDocumentosPorEmpresa999: ${MENSAJE_ERROR_DOCUMENTOS_POR_EMPRESA_999}
+    mensajeErrorValidacion1: ${MENSAJE_ERROR_VALIDACION_1}
+    mensajeErrorValidacion2: ${MENSAJE_ERROR_VALIDACION_2}
+    mensajeErrorValidacion3: ${MENSAJE_ERROR_VALIDACION_3}
+    mensajeErrorValidacion4: ${MENSAJE_ERROR_VALIDACION_4}
+    mensajeErrorValidacion5: ${MENSAJE_ERROR_VALIDACION_5}

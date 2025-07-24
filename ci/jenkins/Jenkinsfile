@@ -1,0 +1,59 @@
+pipeline {
+    agent { label 'docker' }
+    environment {
+        // Nexus Credentials
+        NEXUS_USER = credentials('jenkins-user')
+        NEXUS_PASSWORD = credentials('jenkins-password')
+        
+        // SonarQube Credentials
+        SONARQUBE_TOKEN = credentials('jenkins-sonarquebe-token')
+        
+        GIT_COMMIT_SHORT = "${env.GIT_COMMIT.take(8)}"
+
+        // Parametros OpenShift
+        PROJECT_NAME="facturaspersona"
+        APP_NAME="facturaspersona"
+        OPENSHIFT_PROJECT="bps-csda-$DEPLOYMENT_ENVIRONMENT-$PROJECT_NAME"
+    }
+    stages {
+        stage('Init') {
+            steps {
+                sh 'find ./ci/ -name "*.sh" -exec chmod +x {} \\;'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh './ci/jenkins/build.sh'
+            }
+        }
+        stage('SonarQube') {
+            steps {
+                sh './ci/jenkins/sonarqube.sh'
+            }
+        }
+        stage('Se sube la imagen de Docker a Nexus') {
+            steps {
+                sh './ci/jenkins/upload-nexus.sh'          
+            }
+        }
+        stage('Actualizo Repositorio de Config') {            
+            steps {
+                 echo "--- Comienzo Update Config Repository ---"
+                 echo "env.DEPLOYMENT_ENVIRONMENT=${env.DEPLOYMENT_ENVIRONMENT}"
+                 echo "env.GIT_COMMIT_SHORT=${env.GIT_COMMIT_SHORT}"
+                 echo "Llamaremos al job ${env.PROJECT_NAME}-update-version con parametros:"
+                 echo "DEPLOYMENT_ENVIRONMENT=${env.DEPLOYMENT_ENVIRONMENT}"
+                 echo "NEW_VERSION=${env.GIT_COMMIT_SHORT}"
+                 echo "APP_NAME=${env.APP_NAME}"
+                 echo "OPENSHIFT_PROJECT=${env.OPENSHIFT_PROJECT}"
+                 build job: "${env.PROJECT_NAME}-update-version", parameters: [
+                       string(name: 'DEPLOYMENT_ENVIRONMENT', value: env.DEPLOYMENT_ENVIRONMENT), 
+                       string(name: 'NEW_VERSION', value: env.GIT_COMMIT_SHORT),
+                       string(name: 'APP_NAME', value: env.APP_NAME),
+                       string(name: 'OPENSHIFT_PROJECT', value: env.OPENSHIFT_PROJECT)]
+                 echo "--- Termino Update Config Repository ---"
+            }
+        }
+    }
+}
+
